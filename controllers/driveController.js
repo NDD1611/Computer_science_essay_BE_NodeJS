@@ -38,24 +38,35 @@ const createFolder = async (req, res) => {
 
 const saveFile = async (req, res) => {
     try {
-        const { name, parentId, userId, path } = req.body
+        const { name, parentId, userId, path, size } = req.body
+        console.log(size)
         await folderModel.create({
             name: name,
             parent: parentId,
             user: userId,
             dateCreate: Date.now(),
-            size: '',
+            size: size,
             type: 'file',
             path: path
         })
-        return res.status(200).send('create folder successfully!')
+        return res.status(200).send('Upload file successfully!')
     } catch (e) {
         console.log(e)
         return res.status(500).send('Server error')
     }
 }
 
+const deleteFolder = async (req, res) => {
+    try {
+        let { folderId } = req.body
+        await folderModel.deleteOne({ _id: folderId })
+        return res.status(200).send('Delete successfully!')
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Sever error. please try again')
+    }
+}
 
 module.exports = {
-    getAllFolder, createFolder, saveFile
+    getAllFolder, createFolder, saveFile, deleteFolder
 }
